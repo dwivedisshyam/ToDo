@@ -51,6 +51,8 @@ type endpoint struct {
 func exemptPath(r *http.Request) bool {
 	path := []endpoint{
 		{http.MethodPost, "/users"},
+		{http.MethodGet, "/swagger"},
+		{http.MethodGet, "/.well-known/openapi.json"},
 	}
 
 	for _, p := range path {

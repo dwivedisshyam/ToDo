@@ -1,6 +1,8 @@
 package main
 
 import (
+	"net/http"
+
 	"github.com/dwivedisshyam/todo/db"
 	taskH "github.com/dwivedisshyam/todo/handler/task"
 	userH "github.com/dwivedisshyam/todo/handler/user"
@@ -39,6 +41,11 @@ func main() {
 	r.GET("/tasks", th.List)
 	r.GET("/tasks/:id", th.Get)
 	r.PUT("/tasks/:id", th.Update)
+
+	// fs := http.FileServer(http.Dir("./swagger"))
+
+	r.StaticFile("/.well-known/openapi.json", "./doc/openapi.json")
+	r.StaticFS("/swagger", http.Dir("./swagger"))
 
 	r.Run(":8000")
 }
