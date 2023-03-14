@@ -18,15 +18,15 @@ func New(st store.User) service.User {
 	return &userService{store: st}
 }
 
-func (us *userService) Create(u *model.User) error {
+func (us *userService) Create(u *model.User) (*model.User, error) {
 	err := u.Validate()
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	pswd, hashErr := HashPassword(u.Password)
 	if hashErr != nil {
-		return errors.Unauthenticated(hashErr.Error())
+		return nil, errors.Unexpected(hashErr.Error())
 	}
 
 	u.Password = pswd
@@ -34,12 +34,12 @@ func (us *userService) Create(u *model.User) error {
 
 	u.CreatedAt = &currentTime
 
-	err = us.store.Create(u)
+	id, err := us.store.Create(u)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return us.Get(id)
 }
 
 func (us *userService) Update(u *model.User) error {

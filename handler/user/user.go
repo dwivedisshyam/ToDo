@@ -27,13 +27,13 @@ func (uh userHandler) Create(ctx *gin.Context) {
 		return
 	}
 
-	errSrvc := uh.srvc.Create(&u)
-	if errSrvc != nil {
-		handler.Respond(ctx, nil, errSrvc)
+	user, err := uh.srvc.Create(&u)
+	if err != nil {
+		handler.Respond(ctx, nil, err)
 		return
 	}
 
-	handler.Respond(ctx, nil, nil)
+	handler.Respond(ctx, user, nil)
 }
 
 func (uh userHandler) Update(ctx *gin.Context) {

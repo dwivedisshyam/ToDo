@@ -2,6 +2,7 @@ package user
 
 import (
 	"database/sql"
+	"fmt"
 
 	"github.com/dwivedisshyam/go-lib/pkg/errors"
 	"github.com/dwivedisshyam/todo/model"
@@ -23,13 +24,36 @@ func New(db *sql.DB) store.User {
 	return &userStore{db: db}
 }
 
-func (us *userStore) Create(u *model.User) error {
-	_, err := us.db.Exec(createQuery, u.Username, u.Password, u.FullName, u.Email, u.Role, u.CreatedAt)
+func (us *userStore) Create(u *model.User) (int64, error) {
+	tx, err := us.db.Begin()
 	if err != nil {
-		return errors.Unexpected(err.Error())
+		return 0, errors.Unexpected(err.Error())
 	}
 
-	return nil
+	_, err = tx.Exec(createQuery, u.Username, u.Password, u.FullName, u.Email, u.Role, u.CreatedAt)
+	if err != nil {
+		if rbErr := tx.Rollback(); rbErr != nil {
+			return 0, errors.Unexpected(fmt.Sprintf("err: %v, rbErr: %v", err, rbErr))
+		}
+		return 0, errors.Unexpected(err.Error())
+	}
+
+	var id int64
+
+	err = tx.QueryRow(`SELECT MAX(id) from "user"`).Scan(&id)
+	if err != nil {
+		if rbErr := tx.Rollback(); rbErr != nil {
+			return 0, errors.Unexpected(fmt.Sprintf("err: %v, rbErr: %v", err, rbErr))
+		}
+		return 0, errors.Unexpected(err.Error())
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		return 0, errors.Unexpected(err.Error())
+	}
+
+	return id, nil
 }
 
 func (us *userStore) Update(u *model.User) error {

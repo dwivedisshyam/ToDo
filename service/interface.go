@@ -6,7 +6,7 @@ import (
 )
 
 type User interface {
-	Create(u *model.User) error
+	Create(u *model.User) (*model.User, error)
 	Update(u *model.User) error
 	List() (model.Users, error)
 	Get(id int64) (*model.User, error)
