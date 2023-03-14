@@ -25,7 +25,7 @@ func Respond(ctx *gin.Context, data interface{}, err error) {
 		resp.StatusCode = http.StatusOK
 	}
 
-	ctx.JSON(resp.StatusCode, resp)
+	ctx.AbortWithStatusJSON(resp.StatusCode, resp)
 }
 
 type response struct {
