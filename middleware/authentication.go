@@ -10,10 +10,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Auth(userSrvc service.User) func(*gin.Context) {
+func Auth(userSrvc service.User) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		if exemptPath(ctx.Request) {
 			ctx.Next()
+			return
 		}
 
 		auth := ctx.Request.Header.Get("Authorization")

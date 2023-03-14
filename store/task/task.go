@@ -9,10 +9,10 @@ import (
 )
 
 const (
-	createQuery = `INSERT INTO "Tasks" (user_id, title, description, due_date, created_at) VALUES ($1, $2, $3, $4, $5)`
-	getQuery    = `SELECT user_id, title, description, due_date, created_at from "Tasks" WHERE id=$1`
-	getAllQuery = `SELECT id, user_id, title, description, due_date, created_at from "Tasks"`
-	updateQuery = `UPDATE "Tasks" SET title=$1, description=$2, due_date=$3 WHERE id=$4`
+	createQuery = `INSERT INTO "user" (user_id, title, description, due_date, created_at) VALUES ($1, $2, $3, $4, $5)`
+	getQuery    = `SELECT user_id, title, description, due_date, created_at from "user" WHERE id=$1`
+	getAllQuery = `SELECT id, user_id, title, description, due_date, created_at from "user"`
+	updateQuery = `UPDATE "user" SET title=$1, description=$2, due_date=$3 WHERE id=$4`
 )
 
 type userStore struct {
