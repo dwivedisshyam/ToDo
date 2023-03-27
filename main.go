@@ -5,11 +5,10 @@ import (
 
 	"github.com/dwivedisshyam/todo/db"
 	"github.com/dwivedisshyam/todo/handler"
-	"github.com/dwivedisshyam/todo/service"
-
 	"github.com/dwivedisshyam/todo/middleware"
-	taskStore "github.com/dwivedisshyam/todo/store/task"
-	userStore "github.com/dwivedisshyam/todo/store/user"
+	"github.com/dwivedisshyam/todo/service"
+	"github.com/dwivedisshyam/todo/store"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,8 +17,8 @@ func main() {
 
 	db := db.Connect()
 
-	userSt := userStore.New(db)
-	taskSt := taskStore.New(db)
+	userSt := store.NewUser(db)
+	taskSt := store.NewTask(db)
 
 	taskSvc := service.NewTask(taskSt)
 	userSvc := service.NewUser(userSt)

@@ -1,4 +1,4 @@
-package user
+package store
 
 import (
 	"database/sql"
@@ -6,23 +6,13 @@ import (
 
 	"github.com/dwivedisshyam/go-lib/pkg/errors"
 	"github.com/dwivedisshyam/todo/model"
-	"github.com/dwivedisshyam/todo/store"
-)
-
-const (
-	createQuery      = `INSERT INTO "user" (username, password, full_name, email, role, created_at) VALUES ($1, $2, $3, $4, $5, $6)`
-	getQuery         = `SELECT username, full_name, email, role, created_at from "user" WHERE id=$1`
-	getAllQuery      = `SELECT id, username, full_name, email, role, created_at from "user"`
-	updateQuery      = `UPDATE "user" SET full_name=$1, email=$2 WHERE id=$3`
-	deleteQuery      = `DELETE FROM "user" WHERE id=$1`
-	loginSelectQuery = `SELECT id, username, email, password FROM "user" WHERE username=$1`
 )
 
 type userStore struct {
 	db *sql.DB
 }
 
-func New(db *sql.DB) store.User {
+func NewUser(db *sql.DB) User {
 	return &userStore{db: db}
 }
 
@@ -32,7 +22,7 @@ func (us *userStore) Create(u *model.User) (int64, error) {
 		return 0, errors.Unexpected(err.Error())
 	}
 
-	_, err = tx.Exec(createQuery, u.Username, u.Password, u.FullName, u.Email, u.Role, u.CreatedAt)
+	_, err = tx.Exec(createUserQ, u.Username, u.Password, u.FullName, u.Email, u.Role, u.CreatedAt)
 	if err != nil {
 		if rbErr := tx.Rollback(); rbErr != nil {
 			return 0, errors.Unexpected(fmt.Sprintf("err: %v, rbErr: %v", err, rbErr))
@@ -59,7 +49,7 @@ func (us *userStore) Create(u *model.User) (int64, error) {
 }
 
 func (us *userStore) Update(u *model.User) error {
-	_, err := us.db.Exec(updateQuery, u.FullName, u.Email, u.ID)
+	_, err := us.db.Exec(updateUserQ, u.FullName, u.Email, u.ID)
 	if err != nil {
 		return errors.Unexpected(err.Error())
 	}
@@ -68,7 +58,7 @@ func (us *userStore) Update(u *model.User) error {
 }
 
 func (us *userStore) Delete(id int64) error {
-	_, err := us.db.Exec(deleteQuery, id)
+	_, err := us.db.Exec(deleteUserQ, id)
 	if err != nil {
 		return errors.Unexpected(err.Error())
 	}
@@ -77,7 +67,7 @@ func (us *userStore) Delete(id int64) error {
 }
 
 func (us *userStore) List() (model.Users, error) {
-	rows, err := us.db.Query(getAllQuery)
+	rows, err := us.db.Query(getAllUserQ)
 	if err != nil {
 		return nil, errors.Unexpected(err.Error())
 	}
@@ -101,7 +91,7 @@ func (us *userStore) List() (model.Users, error) {
 func (us *userStore) Get(id int64) (*model.User, error) {
 	var u model.User
 
-	err := us.db.QueryRow(getQuery, id).Scan(&u.Username, &u.FullName, &u.Email, &u.Role, &u.CreatedAt)
+	err := us.db.QueryRow(getUserQ, id).Scan(&u.Username, &u.FullName, &u.Email, &u.Role, &u.CreatedAt)
 	if err == sql.ErrNoRows {
 		return nil, errors.NotFound("user not found")
 	}
@@ -115,7 +105,7 @@ func (us *userStore) Get(id int64) (*model.User, error) {
 
 func (us *userStore) GetByUsername(username string) (*model.User, error) {
 	var u model.User
-	err := us.db.QueryRow(loginSelectQuery, username).
+	err := us.db.QueryRow(loginSelectQ, username).
 		Scan(&u.ID, &u.Username, &u.Email, &u.Password)
 	if err != nil {
 		return nil, errors.Unexpected(err.Error())
