@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/dwivedisshyam/todo/db"
-	taskH "github.com/dwivedisshyam/todo/handler/task"
-	userH "github.com/dwivedisshyam/todo/handler/user"
+	"github.com/dwivedisshyam/todo/handler"
+
 	"github.com/dwivedisshyam/todo/middleware"
 	taskSrvc "github.com/dwivedisshyam/todo/service/task"
 	userSrvc "github.com/dwivedisshyam/todo/service/user"
@@ -27,8 +27,8 @@ func main() {
 
 	r.Use(middleware.Auth(userSvc))
 
-	uh := userH.New(userSvc)
-	th := taskH.New(taskSvc)
+	uh := handler.NewUser(userSvc)
+	th := handler.NewTask(taskSvc)
 
 	r.POST("/login", uh.Login)
 
