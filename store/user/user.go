@@ -10,10 +10,11 @@ import (
 )
 
 const (
-	createQuery = `INSERT INTO "user" (username, password, full_name, email, role, created_at) VALUES ($1, $2, $3, $4, $5, $6)`
-	getQuery    = `SELECT username, full_name, email, role, created_at from "user" WHERE id=$1`
-	getAllQuery = `SELECT id, username, full_name, email, role, created_at from "user"`
-	updateQuery = `UPDATE "user" SET username=$1, full_name=$2, role=$3 WHERE id=$4`
+	createQuery      = `INSERT INTO "user" (username, password, full_name, email, role, created_at) VALUES ($1, $2, $3, $4, $5, $6)`
+	getQuery         = `SELECT username, full_name, email, role, created_at from "user" WHERE id=$1`
+	getAllQuery      = `SELECT id, username, full_name, email, role, created_at from "user"`
+	updateQuery      = `UPDATE "user" SET username=$1, full_name=$2, role=$3 WHERE id=$4`
+	loginSelectQuery = `SELECT id, username, email, password FROM "user" WHERE username=$1`
 )
 
 type userStore struct {
@@ -104,7 +105,7 @@ func (us *userStore) Get(id int64) (*model.User, error) {
 
 func (us *userStore) GetByUsername(username string) (*model.User, error) {
 	var u model.User
-	err := us.db.QueryRow(`SELECT id, username, email, password FROM "Users" WHERE username=$1`, username).
+	err := us.db.QueryRow(loginSelectQuery, username).
 		Scan(&u.ID, &u.Username, &u.Email, &u.Password)
 	if err != nil {
 		return nil, errors.Unexpected(err.Error())

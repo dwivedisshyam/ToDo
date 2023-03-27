@@ -28,11 +28,11 @@ func (us *userService) Login(l *model.Login) (string, error) {
 
 	user.Password = ""
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, model.Payload{
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &model.Payload{
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(24 * time.Hour).Unix(),
 		},
-		User: user,
+		User: *user,
 	})
 
 	// Sign and get the complete encoded token as a string using the secret
@@ -45,10 +45,9 @@ func (us *userService) Login(l *model.Login) (string, error) {
 }
 
 func (us *userService) ValidateToken(ctx *gin.Context, tokenString string) (*model.Payload, error) {
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		// Don't forget to validate the alg is what you expect:
+	token, err := jwt.ParseWithClaims(tokenString, &model.Payload{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
 
 		return []byte(hmacSampleSecret), nil
@@ -58,10 +57,10 @@ func (us *userService) ValidateToken(ctx *gin.Context, tokenString string) (*mod
 		return nil, errors.Unauthenticated("invalid credentials")
 	}
 
-	claims, ok := token.Claims.(model.Payload)
+	claims, ok := token.Claims.(*model.Payload)
 	if !ok || !token.Valid {
 		return nil, errors.Unauthenticated("invalid credentials")
 	}
 
-	return &claims, nil
+	return claims, nil
 }

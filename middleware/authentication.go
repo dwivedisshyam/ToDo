@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/dwivedisshyam/go-lib/pkg/errors"
@@ -38,6 +39,11 @@ func Auth(userSrvc service.User) gin.HandlerFunc {
 			return
 		}
 
+		if strconv.Itoa(int(payload.User.ID)) != ctx.Param("id") {
+			handler.WriteJSON(ctx, nil, errors.Unauthorized("Forbidden"))
+			return
+		}
+
 		ctx.Set("loggedin-user", payload)
 		ctx.Next()
 	}
@@ -50,6 +56,8 @@ type endpoint struct {
 
 func exemptPath(r *http.Request) bool {
 	path := []endpoint{
+		{http.MethodPost, "/login"},
+		// ToDo: Only admin can access all the users
 		{http.MethodPost, "/users"},
 		{http.MethodGet, "/swagger"},
 		{http.MethodGet, "/.well-known/openapi.json"},
