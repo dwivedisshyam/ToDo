@@ -1,10 +1,10 @@
-package task
+package service
 
 import (
 	"time"
 
 	"github.com/dwivedisshyam/todo/model"
-	"github.com/dwivedisshyam/todo/service"
+
 	"github.com/dwivedisshyam/todo/store"
 )
 
@@ -12,7 +12,7 @@ type taskService struct {
 	store store.Task
 }
 
-func New(st store.Task) service.Task {
+func NewTask(st store.Task) Task {
 	return &taskService{store: st}
 }
 

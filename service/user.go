@@ -1,11 +1,10 @@
-package user
+package service
 
 import (
 	"time"
 
 	"github.com/dwivedisshyam/go-lib/pkg/errors"
 	"github.com/dwivedisshyam/todo/model"
-	"github.com/dwivedisshyam/todo/service"
 	"github.com/dwivedisshyam/todo/store"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -14,7 +13,7 @@ type userService struct {
 	store store.User
 }
 
-func New(st store.User) service.User {
+func NewUser(st store.User) User {
 	return &userService{store: st}
 }
 
