@@ -1,0 +1,30 @@
+name: Test-Workflow
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  test:
+    name: Test 🧪
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.18
+        
+    - name: Test
+      run: go test -v ./... -coverprofile coverage.txt -coverpkg=./...
+    
+    - name: Test Report
+      run: |
+        cat coverage.txt | grep -v '.pb.go' > coverage.out
+        go tool cover -func coverage.out
+
