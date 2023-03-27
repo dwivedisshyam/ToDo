@@ -23,17 +23,17 @@ func (uh taskHandler) Create(ctx *gin.Context) {
 
 	err := ctx.BindJSON(&t)
 	if err != nil {
-		handler.Respond(ctx, nil, errors.BadRequest(err.Error()))
+		handler.WriteJSON(ctx, nil, errors.BadRequest(err.Error()))
 		return
 	}
 
 	errSrvc := uh.srvc.Create(&t)
 	if errSrvc != nil {
-		handler.Respond(ctx, nil, errSrvc)
+		handler.WriteJSON(ctx, nil, errSrvc)
 		return
 	}
 
-	handler.Respond(ctx, nil, nil)
+	handler.WriteJSON(ctx, nil, nil)
 }
 
 func (uh taskHandler) Update(ctx *gin.Context) {
@@ -41,19 +41,19 @@ func (uh taskHandler) Update(ctx *gin.Context) {
 
 	id, ok := ctx.Params.Get("id")
 	if !ok {
-		handler.Respond(ctx, nil, errors.Validation("id missing"))
+		handler.WriteJSON(ctx, nil, errors.Validation("id missing"))
 		return
 	}
 
 	userID, err := strconv.ParseInt(id, 10, 64)
 	if err != nil {
-		handler.Respond(ctx, nil, errors.Unexpected(err.Error()))
+		handler.WriteJSON(ctx, nil, errors.Unexpected(err.Error()))
 		return
 	}
 
 	err = ctx.BindJSON(&t)
 	if err != nil {
-		handler.Respond(ctx, nil, errors.BadRequest(err.Error()))
+		handler.WriteJSON(ctx, nil, errors.BadRequest(err.Error()))
 		return
 	}
 
@@ -61,41 +61,41 @@ func (uh taskHandler) Update(ctx *gin.Context) {
 
 	errSrvc := uh.srvc.Update(&t)
 	if errSrvc != nil {
-		handler.Respond(ctx, nil, errSrvc)
+		handler.WriteJSON(ctx, nil, errSrvc)
 		return
 	}
 
-	handler.Respond(ctx, nil, nil)
+	handler.WriteJSON(ctx, nil, nil)
 }
 
 func (uh taskHandler) List(ctx *gin.Context) {
 	tasks, err := uh.srvc.List()
 	if err != nil {
-		handler.Respond(ctx, nil, err)
+		handler.WriteJSON(ctx, nil, err)
 		return
 	}
 
-	handler.Respond(ctx, tasks, err)
+	handler.WriteJSON(ctx, tasks, err)
 }
 
 func (uh taskHandler) Get(ctx *gin.Context) {
 	id, ok := ctx.Params.Get("id")
 	if !ok {
-		handler.Respond(ctx, nil, errors.Validation("id missing"))
+		handler.WriteJSON(ctx, nil, errors.Validation("id missing"))
 		return
 	}
 
 	userID, err := strconv.ParseInt(id, 10, 64)
 	if err != nil {
-		handler.Respond(ctx, nil, errors.Unexpected(err.Error()))
+		handler.WriteJSON(ctx, nil, errors.Unexpected(err.Error()))
 		return
 	}
 
 	user, srvcErr := uh.srvc.Get(userID)
 	if srvcErr != nil {
-		handler.Respond(ctx, nil, srvcErr)
+		handler.WriteJSON(ctx, nil, srvcErr)
 		return
 	}
 
-	handler.Respond(ctx, user, nil)
+	handler.WriteJSON(ctx, user, nil)
 }

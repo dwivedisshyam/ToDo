@@ -19,14 +19,14 @@ func Auth(userSrvc service.User) gin.HandlerFunc {
 
 		auth := ctx.Request.Header.Get("Authorization")
 		if auth == "" {
-			handler.Respond(ctx, nil, errors.Unauthorized("Unauthoried user"))
+			handler.WriteJSON(ctx, nil, errors.Unauthorized("Unauthoried user"))
 
 			return
 		}
 
 		bearer := strings.Split(auth, " ")
 		if len(bearer) < 2 || bearer[1] == "" {
-			handler.Respond(ctx, nil, errors.Unauthorized("Unauthoried user"))
+			handler.WriteJSON(ctx, nil, errors.Unauthorized("Unauthoried user"))
 			return
 		}
 
@@ -34,7 +34,7 @@ func Auth(userSrvc service.User) gin.HandlerFunc {
 
 		payload, err := userSrvc.ValidateToken(ctx, tokenString)
 		if err != nil {
-			handler.Respond(ctx, nil, err)
+			handler.WriteJSON(ctx, nil, err)
 			return
 		}
 

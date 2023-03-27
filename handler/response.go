@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Respond(ctx *gin.Context, data interface{}, err error) {
+func WriteJSON(ctx *gin.Context, data interface{}, err error) {
 	resp := &response{
 		Data:  data,
 		Error: err,

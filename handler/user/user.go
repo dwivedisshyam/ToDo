@@ -23,17 +23,17 @@ func (uh userHandler) Create(ctx *gin.Context) {
 
 	err := ctx.BindJSON(&u)
 	if err != nil {
-		handler.Respond(ctx, nil, errors.BadRequest(err.Error()))
+		handler.WriteJSON(ctx, nil, errors.BadRequest(err.Error()))
 		return
 	}
 
 	user, err := uh.srvc.Create(&u)
 	if err != nil {
-		handler.Respond(ctx, nil, err)
+		handler.WriteJSON(ctx, nil, err)
 		return
 	}
 
-	handler.Respond(ctx, user, nil)
+	handler.WriteJSON(ctx, user, nil)
 }
 
 func (uh userHandler) Update(ctx *gin.Context) {
@@ -41,19 +41,19 @@ func (uh userHandler) Update(ctx *gin.Context) {
 
 	id, ok := ctx.Params.Get("id")
 	if !ok {
-		handler.Respond(ctx, nil, errors.Validation("id missing"))
+		handler.WriteJSON(ctx, nil, errors.Validation("id missing"))
 		return
 	}
 
 	userID, err := strconv.ParseInt(id, 10, 64)
 	if err != nil {
-		handler.Respond(ctx, nil, errors.Unexpected(err.Error()))
+		handler.WriteJSON(ctx, nil, errors.Unexpected(err.Error()))
 		return
 	}
 
 	err = ctx.BindJSON(&u)
 	if err != nil {
-		handler.Respond(ctx, nil, errors.BadRequest(err.Error()))
+		handler.WriteJSON(ctx, nil, errors.BadRequest(err.Error()))
 		return
 	}
 
@@ -61,43 +61,43 @@ func (uh userHandler) Update(ctx *gin.Context) {
 
 	errSrvc := uh.srvc.Update(&u)
 	if errSrvc != nil {
-		handler.Respond(ctx, nil, errSrvc)
+		handler.WriteJSON(ctx, nil, errSrvc)
 		return
 	}
 
-	handler.Respond(ctx, nil, nil)
+	handler.WriteJSON(ctx, nil, nil)
 }
 
 func (uh userHandler) List(ctx *gin.Context) {
 	users, err := uh.srvc.List()
 	if err != nil {
-		handler.Respond(ctx, nil, err)
+		handler.WriteJSON(ctx, nil, err)
 		return
 	}
 
-	handler.Respond(ctx, users, err)
+	handler.WriteJSON(ctx, users, err)
 }
 
 func (uh userHandler) Get(ctx *gin.Context) {
 	id, ok := ctx.Params.Get("id")
 	if !ok {
-		handler.Respond(ctx, nil, errors.Validation("id missing"))
+		handler.WriteJSON(ctx, nil, errors.Validation("id missing"))
 		return
 	}
 
 	userID, err := strconv.ParseInt(id, 10, 64)
 	if err != nil {
-		handler.Respond(ctx, nil, errors.Unexpected(err.Error()))
+		handler.WriteJSON(ctx, nil, errors.Unexpected(err.Error()))
 		return
 	}
 
 	user, srvcErr := uh.srvc.Get(userID)
 	if srvcErr != nil {
-		handler.Respond(ctx, nil, srvcErr)
+		handler.WriteJSON(ctx, nil, srvcErr)
 		return
 	}
 
-	handler.Respond(ctx, user, nil)
+	handler.WriteJSON(ctx, user, nil)
 }
 
 func (uh userHandler) Login(ctx *gin.Context) {
@@ -105,15 +105,15 @@ func (uh userHandler) Login(ctx *gin.Context) {
 
 	err := ctx.BindJSON(&l)
 	if err != nil {
-		handler.Respond(ctx, nil, errors.BadRequest(err.Error()))
+		handler.WriteJSON(ctx, nil, errors.BadRequest(err.Error()))
 		return
 	}
 
 	token, srvcErr := uh.srvc.Login(&l)
 	if srvcErr != nil {
-		handler.Respond(ctx, nil, srvcErr)
+		handler.WriteJSON(ctx, nil, srvcErr)
 		return
 	}
 
-	handler.Respond(ctx, token, nil)
+	handler.WriteJSON(ctx, token, nil)
 }
