@@ -23,6 +23,6 @@ func (l *Login) Validate() error {
 }
 
 type Payload struct {
-	jwt.StandardClaims
+	jwt.RegisteredClaims
 	User User `json:"user"`
 }

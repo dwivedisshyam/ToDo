@@ -29,8 +29,8 @@ func (us *userService) Login(l *model.Login) (string, error) {
 	user.Password = ""
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &model.Payload{
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(24 * time.Hour).Unix(),
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
 		},
 		User: *user,
 	})
