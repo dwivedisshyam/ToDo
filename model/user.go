@@ -18,7 +18,7 @@ type User struct {
 
 type Users []User
 
-func (u *User) Validate() error {
+func (u *User) ValidateCreate() error {
 	if u.Username == "" {
 		return errors.BadRequest("missing username")
 	}
@@ -37,6 +37,18 @@ func (u *User) Validate() error {
 
 	if u.Role == "" {
 		return errors.BadRequest("missing role")
+	}
+
+	return nil
+}
+
+func (u *User) ValidateUpdate() error {
+	if u.FullName == "" {
+		return errors.BadRequest("missing full_name")
+	}
+
+	if u.Email == "" {
+		return errors.BadRequest("missing email")
 	}
 
 	return nil

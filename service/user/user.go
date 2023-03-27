@@ -19,7 +19,7 @@ func New(st store.User) service.User {
 }
 
 func (us *userService) Create(u *model.User) (*model.User, error) {
-	err := u.Validate()
+	err := u.ValidateCreate()
 	if err != nil {
 		return nil, err
 	}
@@ -43,7 +43,7 @@ func (us *userService) Create(u *model.User) (*model.User, error) {
 }
 
 func (us *userService) Update(u *model.User) error {
-	err := u.Validate()
+	err := u.ValidateUpdate()
 	if err != nil {
 		return err
 	}
@@ -63,6 +63,15 @@ func (us *userService) Get(id int64) (*model.User, error) {
 	}
 
 	return user, nil
+}
+
+func (us *userService) Delete(id int64) error {
+	err := us.store.Delete(id)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (us *userService) List() (model.Users, error) {

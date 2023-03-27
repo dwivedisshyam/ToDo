@@ -13,7 +13,8 @@ const (
 	createQuery      = `INSERT INTO "user" (username, password, full_name, email, role, created_at) VALUES ($1, $2, $3, $4, $5, $6)`
 	getQuery         = `SELECT username, full_name, email, role, created_at from "user" WHERE id=$1`
 	getAllQuery      = `SELECT id, username, full_name, email, role, created_at from "user"`
-	updateQuery      = `UPDATE "user" SET username=$1, full_name=$2, role=$3 WHERE id=$4`
+	updateQuery      = `UPDATE "user" SET full_name=$1, email=$2 WHERE id=$3`
+	deleteQuery      = `DELETE FROM "user" WHERE id=$1`
 	loginSelectQuery = `SELECT id, username, email, password FROM "user" WHERE username=$1`
 )
 
@@ -58,7 +59,16 @@ func (us *userStore) Create(u *model.User) (int64, error) {
 }
 
 func (us *userStore) Update(u *model.User) error {
-	_, err := us.db.Exec(updateQuery, u.Username, u.FullName, u.Role, u.ID)
+	_, err := us.db.Exec(updateQuery, u.FullName, u.Email, u.ID)
+	if err != nil {
+		return errors.Unexpected(err.Error())
+	}
+
+	return nil
+}
+
+func (us *userStore) Delete(id int64) error {
+	_, err := us.db.Exec(deleteQuery, id)
 	if err != nil {
 		return errors.Unexpected(err.Error())
 	}

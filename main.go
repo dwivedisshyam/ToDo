@@ -36,11 +36,12 @@ func main() {
 	r.GET("/users", uh.List)
 	r.GET("/users/:id", uh.Get)
 	r.PUT("/users/:id", uh.Update)
+	r.DELETE("/users/:id", uh.Delete)
 
-	r.POST("/tasks", th.Create)
-	r.GET("/tasks", th.List)
-	r.GET("/tasks/:id", th.Get)
-	r.PUT("/tasks/:id", th.Update)
+	r.POST("users/:id/tasks", th.Create)
+	r.GET("users/:id/tasks", th.List)
+	r.GET("users/:id/tasks/:id", th.Get)
+	r.PUT("users/:id/tasks/:id", th.Update)
 
 	// fs := http.FileServer(http.Dir("./swagger"))
 

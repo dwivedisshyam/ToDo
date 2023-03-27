@@ -100,6 +100,28 @@ func (uh userHandler) Get(ctx *gin.Context) {
 	handler.WriteJSON(ctx, user, nil)
 }
 
+func (uh userHandler) Delete(ctx *gin.Context) {
+	id, ok := ctx.Params.Get("id")
+	if !ok {
+		handler.WriteJSON(ctx, nil, errors.Validation("id missing"))
+		return
+	}
+
+	userID, err := strconv.ParseInt(id, 10, 64)
+	if err != nil {
+		handler.WriteJSON(ctx, nil, errors.Unexpected(err.Error()))
+		return
+	}
+
+	srvcErr := uh.srvc.Delete(userID)
+	if srvcErr != nil {
+		handler.WriteJSON(ctx, nil, srvcErr)
+		return
+	}
+
+	handler.WriteJSON(ctx, nil, nil)
+}
+
 func (uh userHandler) Login(ctx *gin.Context) {
 	var l model.Login
 

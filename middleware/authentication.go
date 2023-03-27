@@ -57,7 +57,7 @@ type endpoint struct {
 func exemptPath(r *http.Request) bool {
 	path := []endpoint{
 		{http.MethodPost, "/login"},
-		// ToDo: Only admin can access all the users
+		// ToDo: Anyone can create a user
 		{http.MethodPost, "/users"},
 		{http.MethodGet, "/swagger"},
 		{http.MethodGet, "/.well-known/openapi.json"},

@@ -10,6 +10,8 @@ type User interface {
 	Update(u *model.User) error
 	List() (model.Users, error)
 	Get(id int64) (*model.User, error)
+	Delete(id int64) error
+
 	Login(l *model.Login) (string, error)
 	ValidateToken(ctx *gin.Context, tokenString string) (*model.Payload, error)
 }

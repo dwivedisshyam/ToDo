@@ -3,7 +3,7 @@ module github.com/dwivedisshyam/todo
 go 1.18
 
 require (
-	github.com/dwivedisshyam/go-lib v0.0.0-20221101162610-894a858ec86b
+	github.com/dwivedisshyam/go-lib v0.0.0-20230327172803-197895ccab5e
 	github.com/gin-gonic/gin v1.9.0
 	github.com/golang-jwt/jwt/v4 v4.5.0
 	github.com/lib/pq v1.10.7
