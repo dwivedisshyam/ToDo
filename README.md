@@ -2,4 +2,4 @@
 
 ## Requirements
 
-[] Authentication
+- [ ] Authentication
